@@ -204,8 +204,11 @@ def top_names_by_letter_plot(df, letter, n=10, width=800, height=600, variable='
     if not letter or len(letter) != 1 or not isinstance(letter, str):
         raise ValueError("Please provide a single letter as the starting letter.")
     
-    # Convert 'name' column to strings to avoid issues with non-string data
-    df['name'] = df['name'].astype(str)
+    # Ensure there are no leading/trailing spaces in the 'name' column and convert to string
+    df['name'] = df['name'].str.strip().astype(str)
+    
+    # Fill NaN values in the 'name' column with an empty string
+    df['name'] = df['name'].fillna("")
     
     # Filter the data for names starting with the specified letter
     letter_data = df[df['name'].str.startswith(letter, na=False, case=False)].copy()
