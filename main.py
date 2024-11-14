@@ -64,7 +64,7 @@ with tab2:
     st.plotly_chart(fig2)
 
 with tab3:
-    letter_input = st.text_input("Enter a Letter:")
+    letter_input = st.text_input("Enter a letter:", max_chars=1)
     n_letters = st.selectbox("Number of names per sex", [3,5,10])
     fig3 = top_names_by_letter_plot(data, letter= letter_input, n = n_letters)
     st.plotly_chart(fig3)
