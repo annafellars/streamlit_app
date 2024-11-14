@@ -200,14 +200,14 @@ def one_hit_wonders(ohw_data, year):
 
 
 def top_names_by_letter_plot(df, letter, n=10, width=800, height=600, variable='count'):
-    # Ensure the letter parameter is valid and the 'name' column values are strings
+    # Ensure the letter parameter is a single character string
     if not letter or len(letter) != 1 or not isinstance(letter, str):
         raise ValueError("Please provide a single letter as the starting letter.")
     
-    # Convert the 'name' column to strings to avoid issues with non-string data
+    # Convert 'name' column to strings to avoid issues with non-string data
     df['name'] = df['name'].astype(str)
     
-    # Filter the data to include only names that start with the specified letter
+    # Filter the data for names starting with the specified letter
     letter_data = df[df['name'].str.startswith(letter, na=False, case=False)].copy()
     
     # Get the top n names for each gender
