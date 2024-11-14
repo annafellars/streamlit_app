@@ -64,38 +64,39 @@ with tab2:
     st.plotly_chart(fig2)
 
 def top_letter_plot(df, letter, n=10, width=800, height=600, variable='count'):
-    # Ensure 'name' is a string and strip any leading/trailing spaces
-    df['name'] = df['name'].str.strip().astype(str)
-    
+    # Ensure 'name' column is string type and strip any whitespace
+    df['name'] = df['name'].astype(str).str.strip()
+
     # Check if the letter input is valid
     if len(letter) != 1 or not letter.isalpha():
         st.error("Please enter a single alphabetical letter.")
-        return
+        return None
 
     # Check if the 'name' column has any NaN or non-string values
     if df['name'].isnull().any():
         st.warning("There are NaN values in the 'name' column. They will be ignored.")
     
-    # Filter data by names starting with the provided letter
+    # Filter the data for names starting with the input letter (case-insensitive)
     letter_data = df[df['name'].str.startswith(letter, na=False, case=False)].copy()
-    
-    # Check if any data was filtered
+
+    # Check if data was found for the given letter
     if letter_data.empty:
         st.warning(f"No data found for names starting with '{letter}'")
-        return
+        return None
     
+    # Rank names by the chosen variable
     letter_data['overall_rank'] = letter_data[variable].rank(method='min', ascending=False).astype(int)
-    
-    # Process male and female names separately
+
+    # Separate male and female names
     male_names = letter_data[letter_data['sex'] == 'M']
     top_male = male_names.sort_values(variable, ascending=False).head(n)
-    top_male['sex_rank'] = range(1, len(top_male) + 1)  # Rank within male names
+    top_male['sex_rank'] = range(1, len(top_male) + 1)
 
     female_names = letter_data[letter_data['sex'] == 'F']
     top_female = female_names.sort_values(variable, ascending=False).head(n)
-    top_female['sex_rank'] = range(1, len(top_female) + 1)  # Rank within female names
+    top_female['sex_rank'] = range(1, len(top_female) + 1)
 
-    # Combine the male and female data
+    # Combine male and female data
     combined_data = pd.concat([top_male, top_female]).sort_values(variable, ascending=False)
 
     # Create the plot
