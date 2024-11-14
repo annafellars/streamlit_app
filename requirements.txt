@@ -1,0 +1,6 @@
+pandas
+plotly
+matplotlib
+import requests
+my_plots
+streamlit
