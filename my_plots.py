@@ -241,3 +241,27 @@ def top_names_by_letter_plot(df, letter, n=10, width=800, height=600, variable='
         height=height
     )
     return fig
+
+
+def top_letter_plot(df, letter, n=10, width=800, height=600, variable='count'):
+    letter_data = df[df['name'].str.startswith(letter, na=False, case=False)].copy()
+    letter_data['overall_rank'] = letter_data[variable].rank(method='min', ascending=False).astype(int)
+
+    male_names = letter_data[letter_data['sex'] == 'F']
+    top_male = male_names.sort_values(variable, ascending=False).head(n)
+    top_male['sex_rank'] = range(1, n + 1)  # Rank within male names
+
+    female_names = letter_data[letter_data['sex'] == 'F']
+    top_female = female_names.sort_values(variable, ascending=False).head(n)
+    top_female['sex_rank'] = range(1, n + 1)  # Rank within female names
+
+    df = pd.concat([top_male, top_female])
+    df.sort_values(variable, ascending=False, inplace=True)
+
+    fig = px.bar(df, x='name', y=variable, color='sex',
+                category_orders={"name": df['name'].tolist()},
+                hover_data={'sex_rank': True, 'overall_rank': True, 'sex': False, 'name': False})  # Add custom hover data
+
+    fig.update_layout(title=f'Top {n} by sex names by letter {letter}',
+                    width=width, height=height)  
+    return fig  
