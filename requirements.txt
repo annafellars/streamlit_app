@@ -1,6 +1,6 @@
 pandas
 plotly
 matplotlib
-import requests
+requests
 my_plots
 streamlit
