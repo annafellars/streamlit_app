@@ -38,19 +38,20 @@ ohw_data = ohw(data)
 
 
 st.title("Anna's Awesome App")
-with st.sidebar:
-    input_name = st.text_input("Enter a Name:")
-    year_input = st.slider("Year", min_value = 1880, max_value = 2023, value = 2000)
-    n_names = st.radio("Number of names per sex", [3,5,10])
 
 tab1, tab2 = st.tabs(['Names', 'Years'])
 
 with tab1:
+    input_name = st.text_input("Enter a Name:")
     name_data = data[data['name']==input_name].copy()
     fig = px.line(name_data, x = 'year', y='count', color = 'sex')
     st.plotly_chart(fig)
 
+    st.link_button("View 2024 baby name ideas", "https://www.babycenter.com/baby-names/most-popular/top-baby-names-2024")
+
 with tab2:
+    year_input = st.slider("Year", min_value = 1880, max_value = 2023, value = 2000)
+    n_names = st.radio("Number of names per sex", [3,5,10])
     fig2 = top_names_plot(data, year=year_input, n = n_names)
     st.plotly_chart(fig2)
 
@@ -58,3 +59,5 @@ with tab2:
     table = unique_names_summary(data, year= year_input)
     st.dataframe(table)
 
+    st.write("One Hit Wonders")
+    st.write(one_hit_wonders(data, year=year_input))
