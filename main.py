@@ -63,11 +63,65 @@ with tab2:
     fig2 = top_names_plot(data, year=year_input, n = n_names)
     st.plotly_chart(fig2)
 
+def top_letter_plot(df, letter, n=10, width=800, height=600, variable='count'):
+    # Ensure 'name' is a string and strip any leading/trailing spaces
+    df['name'] = df['name'].str.strip().astype(str)
+    
+    # Check if the letter input is valid
+    if len(letter) != 1 or not letter.isalpha():
+        st.error("Please enter a single alphabetical letter.")
+        return
+
+    # Check if the 'name' column has any NaN or non-string values
+    if df['name'].isnull().any():
+        st.warning("There are NaN values in the 'name' column. They will be ignored.")
+    
+    # Filter data by names starting with the provided letter
+    letter_data = df[df['name'].str.startswith(letter, na=False, case=False)].copy()
+    
+    # Check if any data was filtered
+    if letter_data.empty:
+        st.warning(f"No data found for names starting with '{letter}'")
+        return
+    
+    letter_data['overall_rank'] = letter_data[variable].rank(method='min', ascending=False).astype(int)
+    
+    # Process male and female names separately
+    male_names = letter_data[letter_data['sex'] == 'M']
+    top_male = male_names.sort_values(variable, ascending=False).head(n)
+    top_male['sex_rank'] = range(1, len(top_male) + 1)  # Rank within male names
+
+    female_names = letter_data[letter_data['sex'] == 'F']
+    top_female = female_names.sort_values(variable, ascending=False).head(n)
+    top_female['sex_rank'] = range(1, len(top_female) + 1)  # Rank within female names
+
+    # Combine the male and female data
+    combined_data = pd.concat([top_male, top_female]).sort_values(variable, ascending=False)
+
+    # Create the plot
+    fig = px.bar(
+        combined_data,
+        x='name',
+        y=variable,
+        color='sex',
+        category_orders={"name": combined_data['name'].tolist()},
+        hover_data={'sex_rank': True, 'overall_rank': True, 'sex': False, 'name': False}
+    )
+
+    fig.update_layout(
+        title=f"Top {n} Names Starting with '{letter.upper()}' by Gender",
+        width=width,
+        height=height
+    )
+    return fig
+
 with tab3:
     letter_input = st.text_input("Enter a letter:", max_chars=1)
     n_letters = st.selectbox("Number of names per sex", [3, 5, 10])
 
-    fig3 = top_letter_plot(data, letter=letter_input, n=n_letters)
-    st.plotly_chart(fig3)
+    if letter_input:
+        fig3 = top_letter_plot(data, letter=letter_input, n=n_letters)
+        if fig3:
+            st.plotly_chart(fig3)
 
     
