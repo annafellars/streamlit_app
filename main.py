@@ -37,7 +37,7 @@ data = load_name_data()
 ohw_data = ohw(data)
 
 
-st.title("Anna's Awesome App")
+st.title("Anna's Name App")
 
 with st.sidebar:
     st.write("Other Resources")
@@ -48,11 +48,14 @@ tab1, tab2 = st.tabs(['Names', 'Years'])
 with tab1:
     input_name = st.text_input("Enter a Name:")
     name_data = data[data['name']==input_name].copy()
+
+    st.write("line graph")
     fig = px.line(name_data, x = 'year', y='count', color = 'sex')
     st.plotly_chart(fig)
 
-    fig = px.area(name_data, x='year', y='count', color='sex')
-    st.plotly_chart(fig)
+    st.write("area graph")
+    fig3 = px.area(name_data, x='year', y='count', color='sex')
+    st.plotly_chart(fig3)
     
 with tab2:
     year_input = st.slider("Year", min_value = 1880, max_value = 2023, value = 2000)
