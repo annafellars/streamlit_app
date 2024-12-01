@@ -26,16 +26,7 @@ def load_name_data():
     data['pct'] = data['count'] / data.groupby(['year', 'sex'])['count'].transform('sum')
     return data
 
-@st.cache_data
-def ohw(df):
-    nunique_year = df.groupby(['name', 'sex'])['year'].nunique()
-    one_hit_wonders = nunique_year[nunique_year == 1].index
-    one_hit_wonder_data = df.set_index(['name', 'sex']).loc[one_hit_wonders].reset_index()
-    return one_hit_wonder_data
-
 data = load_name_data()
-ohw_data = ohw(data)
-
 
 st.title("Anna's Name App")
 
@@ -47,15 +38,15 @@ tab1, tab2 = st.tabs(['Names', 'Years'])
 
 with tab1:
     input_name = st.text_input("Enter a Name:")
-    name_data = data[data['name']==input_name].copy()
+    name_data = data[data['name'] == input_name].copy()
 
-    st.write("line graph")
-    fig = px.line(name_data, x = 'year', y='count', color = 'sex')
-    st.plotly_chart(fig)
+    st.write("Line Graph")
+    fig_line = px.line(name_data, x='year', y='count', color='sex')
+    st.plotly_chart(fig_line, key="line_chart")
 
-    st.write("area graph")
-    fig3 = px.area(name_data, x='year', y='count', color='sex')
-    st.plotly_chart(fig3)
+    st.write("Area Graph")
+    fig_area = px.area(name_data, x='year', y='count', color='sex')
+    st.plotly_chart(fig_area, key="area_chart")
     
 with tab2:
     year_input = st.slider("Year", min_value = 1880, max_value = 2023, value = 2000)
