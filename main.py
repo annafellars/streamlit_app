@@ -44,7 +44,7 @@ with tab1:
     fig_line = px.line(name_data, x='year', y='count', color='sex')
     st.plotly_chart(fig_line, key="line_chart")
 
-    st.write("Bar Graph")
+    st.write("Histogram")
     fig_histogram = px.histogram(name_data, x='year', y='count', nbins=14, color='sex')
     st.plotly_chart(fig_histogram)
     
