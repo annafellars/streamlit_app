@@ -45,8 +45,8 @@ with tab1:
     st.plotly_chart(fig_line, key="line_chart")
 
     st.write("Bar Graph")
-    fig_area = px.area(name_data, x='year', y='count', color='sex')
-    st.plotly_chart(fig_area, key="bar_chart")
+    fig_bar = px.bar(name_data, x='year', y='count', color='sex')
+    st.plotly_chart(fig_bar, key="bar_chart")
     
 with tab2:
     year_input = st.slider("Year", min_value = 1880, max_value = 2023, value = 2000)
